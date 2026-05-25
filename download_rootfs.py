@@ -153,7 +153,9 @@ async def crawl_flavor(session, url, distro, version, arch, flavor, results):
         return
 
     sha256s  = await parse_sha256sums(session, latest)
-    filename = f"{distro}-{version}-{arch}-{flavor}-{snapshot}.tar.xz"
+    # colons are invalid in GitHub release asset names
+    safe_snapshot = snapshot.replace(":", "-")
+    filename = f"{distro}-{version}-{arch}-{flavor}-{safe_snapshot}.tar.xz"
     results.append(RootfsEntry(
         url=rootfs_url, filename=filename,
         distro=distro, version=version, arch=arch,
